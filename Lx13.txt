@@ -1,0 +1,141 @@
+﻿C＃企业级开发技术练习13答题卡
+
+班级：信息管理2班
+姓名：黄家福
+学号：20190307227
+
+*注：排除答案放置在序号下方。* /
+
+（一）
+使用系统；
+使用System.Collections.Generic;
+使用System.Threading;
+命名空间ConsoleApp1
+{
+    班级计划
+    {
+        静态void Main（string [] args）
+        {
+            var scores = new List <（字符串名称，十进制cs，十进制sql）>
+            {
+                （“ zhang”，80,92），
+                （“ liu”，57,62），
+                （“ wang”，61,72），
+                （“ zhao”，95,96）
+            };
+            十进制s1 = 0，s2 = 0;
+            线程sumCS =新线程（t =>
+            {
+                foreach（分数的可变分数）
+                {
+                    s1 + = score.cs;
+                    Thread.Sleep（（int）t）;
+                }
+            }）;
+            线程sumSQL =新线程（t =>
+            {
+                foreach（分数的可变分数）
+                {
+                    s2 + = score.sql;
+                    Thread.Sleep（（int）t）;
+                }
+            }）;
+            sumCS.Start（20）;
+            sumSQL.Start（8）;
+            sumCS.Join（）;
+            sumSQL.Join（）;
+            十进制avg1 = s1 / scores.Count，avg2 = s2 / scores.Count;
+            Console.WriteLine（$“ cs平均分：{avg1}，sql平均分：{avg2}”）;
+        }
+    }
+}
+
+（二）
+使用系统；
+使用System.IO;
+使用System.Threading;
+命名空间ConsoleApp1
+{
+    班级计划
+    {
+        静态void Main（string [] args）
+        {
+            AutoResetEvent aeFile =新的AutoResetEvent（false）;
+            字符串文件= @“ D：\ homeDir \ homeThStm.txt”;
+            线程writeTh = new Thread（（）=>
+            {
+                使用（StreamWriter sw = new StreamWriter（file））
+                {
+                    sw.WriteLine（“一帆风顺吉星到”）; Thread.Sleep（100）;
+                    sw.WriteLine（“万事如意福临门”）; Thread.Sleep（100）;
+                }
+                aeFile.Set（）;
+            }）;
+            线程readTh = new Thread（（）=>
+            {
+                aeFile.WaitOne（）;
+                使用（StreamReader sr = new StreamReader（file））
+                {
+                    弦线;
+                    while（（line = sr.ReadLine（））！= null）
+                    {
+                        Console.WriteLine（line）;
+                    }
+                }
+            }）;
+            writeTh.Start（）; readTh.Start（）;
+        }
+    }
+}
+
+（三）
+使用系统；
+使用System.IO;
+使用System.Threading;
+使用System.Text;
+使用System.Collections.Generic;
+命名空间ConsoleApp1
+{
+    班级计划
+    {
+        静态void Main（string [] args）
+        {
+            string [] strs = {“古藤老树昏鸦，”，“小桥流水人家，”，“古道西风瘦马。”，“夕阳西下，”，“断肠人在天涯。”};
+            var aeList = new List <AutoResetEvent>（）;
+            var ns = new List <int>（）; int nLen = 0;
+            foreach（var str in strs）
+            {
+                ns.Add（nLen）; nLen + = str.Length * 3;
+                aeList.Add（new AutoResetEvent（false））;
+            }
+            var aeArr = aeList.ToArray（）;
+            字符串songFile = @“ D：\ homeDir \ songci.txt”;
+            File.Delete（songFile）;
+            for（int k = 0; k <aeArr.Length; k ++） 
+            {
+                {
+                    线程songTh =新线程（p =>
+                    {
+                        int i =（int）p; Thread.Sleep（100）;
+                        使用（FileStream fs = new FileStream（songFile，FileMode.OpenOrCreate，FileAccess.Write，FileShare.Write））
+                        {
+                            fs.Seek（ns [i]，SeekOrigin.Begin）;
+                            var buffer = Encoding.UTF8.GetBytes（strs [i]）;
+                            fs.Write（buffer）;
+                        }
+                        aeArr [i] .Set（）;
+                    }）;
+                    songTh.Start（k）;
+                }
+            }
+            Console.WriteLine（“天净沙·秋思”）;
+            WaitHandle.WaitAll（aeArr）;
+            使用（StreamReader sr = new StreamReader（songFile））
+            {
+                字符串t = sr.ReadToEnd（）;
+                Console.WriteLine（t）;
+            }
+        }
+    }
+}
+
